@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>GLSL Editor</title>
+		<link href="/favicon.gif" rel="shortcut icon"/>
+		<style>
+			body {
+				height: 100%;
+    			margin: 0;
+	  			background: #171e22;
+			}
+
+			#glsl_editor {
+				height: 100%;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="glsl_editor"></div>
+	</body>
+
+	<link type="text/css" rel="stylesheet" href="build/glslEditor.css">
+    <script type="text/javascript" src="build/glslEditor.js"></script>
+    <script type="text/javascript">
+    	window.glslEditor = new GlslEditor('#glsl_editor', {
+    		canvas_size: 500,
+            canvas_draggable: true,
+            canvas_resizable: true,
+    		theme: 'monokai',
+            watchHash: true,
+			fileDrops: true,
+			frag_header: `
+#ifdef GL_ES
+precision mediump float;
+#endif
+uniform vec2 iResolution;
+uniform vec2 iMouse;
+uniform float iTime;
+`,
+    		menu: false
+		});
+		
+		function htmlDecode(input) {
+			var doc = new DOMParser().parseFromString(input, "text/html");
+			return doc.documentElement.textContent;
+		}
+
+		window.glslEditor.editor.doc.setValue(htmlDecode(`{{ code }}`));
+
+        document.body.style.backgroundColor = window.getComputedStyle(glslEditor.editor.getWrapperElement(),null).getPropertyValue('background-color');
+	
+
+		function redir() {
+			let goods = {'code':window.glslEditor.editor.doc.getValue()};
+			let gooder = new URLSearchParams(goods).toString();
+			window.location.replace('/?'+gooder);
+		}
+	
+	</script>
+	
+	<button onclick="redir()">Autocomplete</button>
+
+</html>
